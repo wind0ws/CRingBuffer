@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifndef __in
 #define __in
@@ -23,18 +24,20 @@ extern "C" {
 #define __out_opt
 #endif
 
+typedef struct __ring_buffer_t *ring_buf;
+
 /**
  * 创建RingBuffer
  * @param size RingBuffer大小，必须是2的n次方
  * @return RingBuffer对象指针
  */
-void *RingBuffer_create(uint32_t size);
+ring_buf RingBuffer_create(uint32_t size);
 
 /**
  * 释放内存，销毁RingBuffer对象
  * @param ring_buf_p RingBuffer对象指针
  */
-void RingBuffer_destroy(__in void *ring_buf_p);
+void RingBuffer_destroy(__in ring_buf ring_buf_p);
 
 /**
  * 从RingBuffer中读取指定size的数据放到target中。
@@ -44,7 +47,7 @@ void RingBuffer_destroy(__in void *ring_buf_p);
  * @param size 要读取数据大小
  * @return 真正读取到的数据size
  */
-uint32_t RingBuffer_read(__in void *ring_buf_p, __out void *target, uint32_t size);
+uint32_t RingBuffer_read(__in ring_buf ring_buf_p, __out void *target, uint32_t size);
 
 /**
  * 从source中读取指定size的数据写入到RingBuffer队列中。
@@ -54,42 +57,42 @@ uint32_t RingBuffer_read(__in void *ring_buf_p, __out void *target, uint32_t siz
  * @param size 从source中读取的大小
  * @return 真正写入的数据size
  */
-uint32_t RingBuffer_write(__in void *ring_buf_p, __in const void *source, uint32_t size);
+uint32_t RingBuffer_write(__in ring_buf ring_buf_p, __in const void *source, uint32_t size);
 
 /**
  * RingBuffer当前是否有数据
  * @param ring_buf_p RingBuffer指针
  * @return true则没有数据
  */
-bool RingBuffer_empty(__in const void *ring_buf_p);
+bool RingBuffer_empty(__in const ring_buf ring_buf_p);
 
 /**
  * RingBuffer当前是否满
  * @param ring_buf_p RingBuffer指针
  * @return true则队列已满
  */
-bool RingBuffer_full(__in const void *ring_buf_p);
+bool RingBuffer_full(__in const ring_buf ring_buf_p);
 
 /**
  * 清除RingBuffer数据
  * 注意一定要等没有线程在read/write的时候才能clear,否则会有线程安全问题!!!
  * @param ring_buffer_p RingBuffer指针
  */
-void RingBuffer_clear(__in void *ring_buffer_p);
+void RingBuffer_clear(__in ring_buf ring_buffer_p);
 
 /**
  * 当前RingBuffer队列可读取数据大小
  * @param ring_buf_p RingBuffer指针
  * @return 可读取数据byte size
  */
-uint32_t RingBuffer_available_data(__in const void *ring_buf_p);
+uint32_t RingBuffer_available_data(__in const ring_buf ring_buf_p);
 
 /**
  * 当前RingBuffer队列可用空间
  * @param ring_buf_p RingBuffer指针
  * @return 可用空间byte size
  */
-uint32_t RingBuffer_available_space(__in const void *ring_buf_p);
+uint32_t RingBuffer_available_space(__in const ring_buf ring_buf_p);
 
 
 #ifdef __cplusplus

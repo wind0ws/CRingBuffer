@@ -22,7 +22,13 @@ class NativeLibJni {
         external fun setLoggable(isLoggable: Boolean)
 
         @JvmStatic
-        external fun testRingMsgQueue();
+        external fun testRingMsgQueue()
+
+        @JvmStatic
+        external fun testQueueHandler()
+
+        @JvmStatic
+        external fun testSemaphore()
     }
 
 }
