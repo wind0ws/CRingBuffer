@@ -2,8 +2,8 @@
 // Created by Threshold on 2019/5/7.
 //
 
-#ifndef XFAR_RING_MSG_QUEUE_H
-#define XFAR_RING_MSG_QUEUE_H
+#ifndef CRINGBUFFER_RING_MSG_QUEUE_H
+#define CRINGBUFFER_RING_MSG_QUEUE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,84 +12,72 @@ extern "C" {
 #include <stdint.h>
 #include "ringbuffer.h"
 
-#define MSG_OBJ_MAX_CAPACITY 1024
-typedef char MSG_OBJ_DATA_TYPE;
-
-typedef struct {
-    int what;
-    int arg1;
-    int arg2;
-    struct {
-        MSG_OBJ_DATA_TYPE data[MSG_OBJ_MAX_CAPACITY];
-        int data_len;
-    } obj;
-} queue_msg_t;
-
 typedef struct __ring_msg_queue *ring_msg_queue;
 
 /**
- * 创建RingMsgQueue
- * @param max_msg_capacity QueueMsg的最大数量
- * @return RingMsgQueue指针
+ * create RingMsgQueue
+ * @param max_msg_capacity max amount msg
+ * @return RingMsgQueue pointer
  */
-ring_msg_queue RingMsgQueue_create(__in uint32_t max_msg_capacity);
+ring_msg_queue RingMsgQueue_create(__in uint32_t one_msg_byte_size, __in uint32_t max_msg_capacity);
 
 /**
- * push QueueMsg 到队尾。
- * 如果此时队列已满，则添加失败
- * @param ring_msg_queue_p RingMsgQueue指针
- * @param msg_p 要读取的QueueMsg对象指针
- * @return true添加成功，否则失败
+ * push QueueMsg to queue tail.
+ * <p>if queue is full, push will be fail</p>
+ * @param ring_msg_queue_p RingMsgQueue
+ * @param msg_p the msg pointer which to read and copy it memory to queue tail
+ * @return true indicator push succeed, otherwise false
  */
-bool RingMsgQueue_push(__in ring_msg_queue ring_msg_queue_p, __in queue_msg_t *msg_p);
+bool RingMsgQueue_push(__in ring_msg_queue ring_msg_queue_p, __in void *msg_p);
 
 /**
- * 从头部pop出QueueMsg。
- * @param ring_msg_queue_p RingMsgQueue指针
- * @param msg_p 要写入的QueueMsg的对象指针，QueueMsg内存由调用者分配(无需初始化)
- * @return true则pop成功，否则失败
+ * pop queue msg from head
+ * @param ring_msg_queue_p RingMsgQueue
+ * @param msg_p the msg pointer which to write(copy memory to it, caller should manage msg memory first)
+ * @return true indicator pop succeed, otherwise false
  */
-bool RingMsgQueue_pop(__in ring_msg_queue ring_msg_queue_p, __out queue_msg_t *msg_p);
+bool RingMsgQueue_pop(__in ring_msg_queue ring_msg_queue_p, __out void *msg_p);
 
 /**
- * 清除所有的QueueMsg
- * 注意调用此方法时是不能调用push/pop方法的，会有线程安全问题！！！
- * @param ring_msg_queue_p RingMsgQueue指针
+ * clear all QueueMsg
+ * <p>Warn: you should stop call push/pop method first before call this method, otherwise it will have thread safe issue.<br>
+ * after call this method, you are free to call push/pop even at same time in two thread just like before.</p>
+ * @param ring_msg_queue_p RingMsgQueue
  */
 void RingMsgQueue_clear(__in ring_msg_queue ring_msg_queue_p);
 
 /**
- * 获取当前队列中可以pop的QueueMsg数量
- * @param ring_msg_queue_p RingMsgQueue指针
- * @return 返回QueueMsg数量
+ * get current msg amount in msg queue
+ * @param ring_msg_queue_p RingMsgQueue
+ * @return msg amount
  */
 uint32_t RingMsgQueue_available_pop_msg_amount(__in ring_msg_queue ring_msg_queue_p);
 
 /**
- * 获取当前队列中可push的QueueMsg数量
- * @param ring_msg_queue_p RingMsgQueue指针
- * @return 返回QueueMsg数量
+ * get current max pushable msg amount
+ * @param ring_msg_queue_p RingMsgQueue
+ * @return msg amount
  */
 uint32_t RingMsgQueue_available_push_msg_amount(__in ring_msg_queue ring_msg_queue_p);
 
 /**
- * 当前队列是否有可以pop的QueueMsg
- * @param ring_msg_queue_p RingMsgQueue指针
- * @return true则队列为空
+ * if msg amount in queue is zero
+ * @param ring_msg_queue_p RingMsgQueue
+ * @return true indicator queue is empty, otherwise false
  */
 bool RingMsgQueue_is_empty(__in ring_msg_queue ring_msg_queue_p);
 
 /**
- * 当前队列是否可以push QueueMsg
- * @param ring_msg_queue_p RingMsgQueue指针
- * @return true则队列满
+ * if available push msg amount is zero
+ * @param ring_msg_queue_p RingMsgQueue
+ * @return true indicator queue is full, otherwise false
  */
 bool RingMsgQueue_is_full(__in ring_msg_queue ring_msg_queue_p);
 
 /**
- * 释放内存，销毁RingMsgQueue
- * 调用此方法前应该停止push/pop
- * @param ring_msg_queue_p RingMsgQueue指针
+ * destroy RingMsgQueue and free memory
+ * <p>Warn: you should stop call push/pop first before call this method</p>
+ * @param ring_msg_queue_p RingMsgQueue
  */
 void RingMsgQueue_destroy(__in ring_msg_queue ring_msg_queue_p);
 
@@ -97,4 +85,4 @@ void RingMsgQueue_destroy(__in ring_msg_queue ring_msg_queue_p);
 }
 #endif
 
-#endif //XFAR_RING_MSG_QUEUE_H
+#endif //CRINGBUFFER_RING_MSG_QUEUE_H

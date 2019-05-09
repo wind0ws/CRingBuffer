@@ -105,7 +105,7 @@ static void *thread_fun_consumer(void *thread_context) {
 
 extern "C" JNIEXPORT void JNICALL
 Java_tv_yuyin_nativeapp_jni_NativeLibJni_testRingMsgQueue(JNIEnv *env, jclass type) {
-    ring_msg_queue msgQueue = RingMsgQueue_create(10);
+    ring_msg_queue msgQueue = RingMsgQueue_create(sizeof(queue_msg_t), 10);
     LOGI("now created msg queue. available_msg=%d, remain_space=%d",
          RingMsgQueue_available_pop_msg_amount(msgQueue),
          RingMsgQueue_available_push_msg_amount(msgQueue));
@@ -177,8 +177,11 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_testQueueHandler(JNIEnv *env, jclass ty
         msg.obj.data_len = strlen(msg.obj.data) + 1;
         send_msg:
         if (!QueueHandler_send(handler_p, &msg)) {
-            LOGE("queue is full, retry after 150ms");
+            QueueHandler_clear(handler_p);
+            LOGE("queue is full, clear it finished");
             usleep(150000);
+//            LOGE("queue is full, retry after 150ms");
+//            usleep(150000);
             goto send_msg;
         }
         LOGD("pushed msg: %s", msg.obj.data);
