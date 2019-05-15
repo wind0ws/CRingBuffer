@@ -36,4 +36,9 @@ class NativeLibJniTest {
         NativeLibJni.testSemaphore()
     }
 
+    @Test
+    fun testSimpleQueue(){
+        NativeLibJni.testSimpleQueue()
+    }
+
 }

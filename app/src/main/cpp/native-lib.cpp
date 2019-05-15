@@ -6,6 +6,7 @@
 #include "mlog.h"
 #include "ring_msg_queue.h"
 #include "msg_queue_handler.h"
+#include "simple_queue.h"
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_tv_yuyin_nativeapp_jni_NativeLibJni_stringFromJNI(
@@ -206,3 +207,40 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_testSemaphore(JNIEnv *env, jclass type)
     sem_destroy(&sem);
     LOGI("test semaphore succeed");
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_tv_yuyin_nativeapp_jni_NativeLibJni_testSimpleQueue(JNIEnv *env, jclass type) {
+    LOGD("enter %s:%d", __func__, __LINE__);
+    simple_queue_handle handle = simple_queue_init();
+    LOGI("after init. simple_queue_available_space=%d, simple_queue_available_data=%d",
+         simple_queue_available_space(handle), simple_queue_available_data(handle));
+    LOGI("simple_queue_is_full=>%d, simple_queue_is_empty=%d",
+         simple_queue_is_full(handle), simple_queue_is_empty(handle));
+    if (simple_queue_push(handle, 'A') == SIMPLE_QUEUE_SUCCESS) {
+        LOGD("succeed push 'A' to queue");
+    }
+    if (simple_queue_push(handle, 'B') == SIMPLE_QUEUE_SUCCESS) {
+        LOGD("succeed push 'B' to queue");
+    }
+    LOGI("simple_queue_is_full=>%d, simple_queue_is_empty=%d",
+         simple_queue_is_full(handle), simple_queue_is_empty(handle));
+    LOGI("after push two char. simple_queue_available_space=%d, simple_queue_available_data=%d",
+         simple_queue_available_space(handle), simple_queue_available_data(handle));
+    char data = '\0';
+    if (simple_queue_pop(handle, &data) == SIMPLE_QUEUE_SUCCESS) {
+        LOGD("succeed popped out data=%c", data);
+    }
+    if (simple_queue_pop(handle, &data) == SIMPLE_QUEUE_SUCCESS) {
+        LOGD("succeed popped out data=%c", data);
+    }
+    LOGI("after poped two char. simple_queue_available_space=%d, simple_queue_available_data=%d",
+         simple_queue_available_space(handle), simple_queue_available_data(handle));
+    LOGI("simple_queue_is_full=>%d, simple_queue_is_empty=%d", simple_queue_is_full(handle),
+         simple_queue_is_empty(handle));
+    if (simple_queue_pop(handle, &data) == SIMPLE_QUEUE_FAIL) {
+        LOGE("no data to pop. queue is empty");
+    }
+    simple_queue_destroy(&handle);
+    LOGI("test queue succeed");
+}
+

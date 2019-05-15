@@ -68,17 +68,18 @@ ring_buf RingBuffer_create(uint32_t buf_size) {
 }
 
 void RingBuffer_destroy(ring_buf ring_buffer_p) {
-    if (ring_buffer_p) {
-        ring_buffer_p->in = 0;
-        ring_buffer_p->out = 0;
-        ring_buffer_p->size = 0;
-
-        if (ring_buffer_p->buf) {
-            free(ring_buffer_p->buf);
-            ring_buffer_p->buf = NULL;
-        }
-        free(ring_buffer_p);
+    if (!ring_buffer_p) {
+        return;
     }
+    ring_buffer_p->in = 0;
+    ring_buffer_p->out = 0;
+    ring_buffer_p->size = 0;
+
+    if (ring_buffer_p->buf) {
+        free(ring_buffer_p->buf);
+        ring_buffer_p->buf = NULL;
+    }
+    free(ring_buffer_p);
 }
 
 inline bool RingBuffer_empty(ring_buf buffer) {

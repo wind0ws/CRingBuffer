@@ -18,6 +18,7 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         ${CMAKE_SOURCE_DIR}/src/main/cpp/mlog.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/simple_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/msg_queue_handler.c
@@ -28,6 +29,7 @@ add_executable(
         ring
 
         ${CMAKE_SOURCE_DIR}/src/main/cpp/mlog.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/simple_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/msg_queue_handler.c

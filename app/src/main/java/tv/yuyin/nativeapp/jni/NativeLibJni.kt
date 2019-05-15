@@ -29,6 +29,9 @@ class NativeLibJni {
 
         @JvmStatic
         external fun testSemaphore()
+
+        @JvmStatic
+        external fun testSimpleQueue();
     }
 
 }
