@@ -11,24 +11,24 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-        native-lib
+        tests
 
         # Sets the library as a shared library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        ${CMAKE_SOURCE_DIR}/src/main/cpp/mlog.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/logger_android.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/simple_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/msg_queue_handler.c
-        ${CMAKE_SOURCE_DIR}/src/main/cpp/native-lib.cpp)
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/tests.cpp)
 
 
 add_executable(
         ring
 
-        ${CMAKE_SOURCE_DIR}/src/main/cpp/mlog.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/logger_android.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/simple_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
@@ -94,7 +94,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        native-lib
+        tests
 
         # Links the target library to the log library
         # included in the NDK.

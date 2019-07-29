@@ -1,6 +1,6 @@
 package tv.yuyin.nativeapp.jni
 
-class NativeLibJni {
+class NativeTestsJni {
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -12,7 +12,7 @@ class NativeLibJni {
 
         // Used to load the 'native-lib' library on application startup.
         init {
-            System.loadLibrary("native-lib")
+            System.loadLibrary("tests")
         }
 
         @JvmStatic

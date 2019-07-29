@@ -28,16 +28,17 @@ typedef struct __ring_buffer_t *ring_buf;
 
 /**
  * create RingBuffer.
+ * <p>WARN: The ring buffer real size is not always as same as you provided.</p>
  * @param size RingBuffer size, must be pow of 2. if not, will change size to next pow of it automatically.
  * @return RingBuffer pointer
  */
-ring_buf RingBuffer_create(uint32_t size);
+ring_buf RingBuffer_create(__in uint32_t size);
 
 /**
  * destroy RingBuffer and free memory
  * @param ring_buf_p RingBuffer pointer
  */
-void RingBuffer_destroy(__in ring_buf ring_buf_p);
+void RingBuffer_destroy(__in const ring_buf ring_buf_p);
 
 /**
  * copy specified size memory from RingBuffer to target
@@ -47,7 +48,7 @@ void RingBuffer_destroy(__in ring_buf ring_buf_p);
  * @param size copy specified size memory
  * @return the real read data size
  */
-uint32_t RingBuffer_read(__in ring_buf ring_buf_p, __out void *target, uint32_t size);
+uint32_t RingBuffer_read(__in const ring_buf ring_buf_p, __out void *target, uint32_t size);
 
 /**
  * copy specified size memory from source to RingBuffer
@@ -57,42 +58,42 @@ uint32_t RingBuffer_read(__in ring_buf ring_buf_p, __out void *target, uint32_t 
  * @param size copy specified size memory
  * @return the real wrote data size
  */
-uint32_t RingBuffer_write(__in ring_buf ring_buf_p, __in const void *source, uint32_t size);
+uint32_t RingBuffer_write(__in const ring_buf ring_buf_p, __in const void *source, uint32_t size);
 
 /**
- * clear RingBuffer all data
- * <p>Warn: you should stop call read/write before call this method, otherwise it will have thread safe issue</p>
+ * clear RingBuffer all data.
+ * <p>WARN: you shouldn't call clear while calling read/write, otherwise it will have thread safe issue</p>
  * @param ring_buffer_p RingBuffer
  */
-void RingBuffer_clear(__in ring_buf ring_buffer_p);
+inline void RingBuffer_clear(__in const ring_buf ring_buffer_p);
 
 /**
  * get current RingBuffer available data size
  * @param ring_buf_p RingBuffer
  * @return available read byte size
  */
-uint32_t RingBuffer_available_data(__in const ring_buf ring_buf_p);
+inline uint32_t RingBuffer_available_data(__in const ring_buf ring_buf_p);
 
 /**
  * get current RingBuffer available space to write
  * @param ring_buf_p RingBuffer
  * @return available write byte size
  */
-uint32_t RingBuffer_available_space(__in const ring_buf ring_buf_p);
+inline uint32_t RingBuffer_available_space(__in const ring_buf ring_buf_p);
 
 /**
  * indicate RingBuffer whether is empty(no data to read)
  * @param ring_buf_p RingBuffer
  * @return true indicate no data to read
  */
-bool RingBuffer_empty(__in const ring_buf ring_buf_p);
+inline bool RingBuffer_is_empty(__in const ring_buf ring_buf_p);
 
 /**
  * indicate RingBuffer whether is full(no space to write)
  * @param ring_buf_p RingBuffer
  * @return true indicate no space to write
  */
-bool RingBuffer_full(__in const ring_buf ring_buf_p);
+inline bool RingBuffer_is_full(__in const ring_buf ring_buf_p);
 
 #ifdef __cplusplus
 }

@@ -38,56 +38,56 @@ typedef void (*msg_handler_callback)(queue_msg_t *msg_p);
  * create QueueHandler
  * @param max_msg_capacity MaxMsgCapacity
  * @param callback handle msg function
- * @return queue handler pointer
+ * @return queue handler ptr
  */
 queue_handler QueueHandler_create(__in uint32_t max_msg_capacity, __in msg_handler_callback callback);
 
 /**
  * send msg to queue handler
- * @param handler_p queue handler
- * @param msg_p msg pointer
+ * @param handler_p queue handler ptr
+ * @param msg_p msg ptr
  * @return true succeed. otherwise false
  */
 bool QueueHandler_send(__in queue_handler handler_p,__in queue_msg_t *msg_p);
 
 /**
  * current can send msg max amount
- * @param handler_p queue handler
+ * @param handler_p queue handler ptr
  * @return amount
  */
-uint32_t QueueHandler_available_send_msg_amount(__in queue_handler handler_p);
+inline uint32_t QueueHandler_available_send_msg_amount(__in queue_handler handler_p);
 
 /**
  * current msg amount in queue handler
- * @param handler_p queue handler
+ * @param handler_p queue handler ptr
  * @return amount
  */
-uint32_t QueueHandler_current_queue_msg_amount(__in queue_handler handler_p);
+inline uint32_t QueueHandler_current_queue_msg_amount(__in queue_handler handler_p);
 
 /**
  * if current msg amount in queue handler is zero
- * @param handler_p queue handler
+ * @param handler_p queue handler ptr
  * @return true indicate for empty.
  */
-bool QueueHandler_is_empty(__in queue_handler handler_p);
+inline bool QueueHandler_is_empty(__in queue_handler handler_p);
 
 /**
  * if current can send msg max amount is zero.
- * @param handler_p queue handler
+ * @param handler_p queue handler ptr
  * @return true indicate queue is full
  */
-bool QueueHandler_is_full(__in queue_handler handler_p);
+inline bool QueueHandler_is_full(__in queue_handler handler_p);
 
 /**
- * clear all msg in queue if the msg not handled.
+ * clear all msg in queue if msg has not handled.
  * <p>usually it will be fast, but if you stuck in callback, it will effect after the latest callback finished </p>
- * @param handler_p
+ * @param handler_p queue handler ptr
  */
-void QueueHandler_clear(__in queue_handler handler_p);
+inline void QueueHandler_clear(__in queue_handler handler_p);
 
 /**
  * destroy queue handler
- * @param handler_p queue handler
+ * @param handler_p queue handler ptr
  */
 void QueueHandler_destroy(__in queue_handler handler_p);
 

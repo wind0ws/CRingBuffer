@@ -38,6 +38,11 @@ __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__);\
 __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__);\
 }
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__);
+//#define LOGV(...) do{if(g_showLog) {__android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__);}}while(0);
+//#define LOGD(...) do{if(g_showLog) {__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__);}}while(0);
+//#define LOGI(...) do{if(g_showLog) {__android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__);}}while(0);
+//#define LOGW(...) do{if(g_showLog) {__android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__);}}while(0);
+//#define LOGE(...) do{__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__);}while(0);
 
 void log_chars_hex(const char *chars, int length);
 

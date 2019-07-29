@@ -14,31 +14,31 @@ import org.junit.runner.RunWith
  * @change
  */
 @RunWith(AndroidJUnit4::class)
-class NativeLibJniTest {
+class NativeTestsJniTest {
 
     @Before
     fun setUp() {
-        NativeLibJni.setLoggable(true)
+        NativeTestsJni.setLoggable(true)
     }
 
     @Test
     fun testRingMsgQueue(){
-        NativeLibJni.testRingMsgQueue()
+        NativeTestsJni.testRingMsgQueue()
     }
 
     @Test
     fun testRingMsgQueueHandler(){
-        NativeLibJni.testQueueHandler()
+        NativeTestsJni.testQueueHandler()
     }
 
     @Test
     fun testSemaphore(){
-        NativeLibJni.testSemaphore()
+        NativeTestsJni.testSemaphore()
     }
 
     @Test
     fun testSimpleQueue(){
-        NativeLibJni.testSimpleQueue()
+        NativeTestsJni.testSimpleQueue()
     }
 
 }

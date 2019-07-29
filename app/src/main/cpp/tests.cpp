@@ -3,13 +3,13 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include "mlog.h"
+#include "logger_android.h"
 #include "ring_msg_queue.h"
 #include "msg_queue_handler.h"
 #include "simple_queue.h"
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_stringFromJNI(
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -17,7 +17,7 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_stringFromJNI(
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_setLoggable(JNIEnv *env,
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_setLoggable(JNIEnv *env,
                                                      jclass type,
                                                      jboolean isLoggable) {
     g_showLog = isLoggable;
@@ -25,7 +25,7 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_setLoggable(JNIEnv *env,
 }
 
 extern "C" JNIEXPORT jbyteArray JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_stringBytesFromJni(
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_stringBytesFromJni(
         JNIEnv *env,
         jclass type,
         jstring content) {
@@ -105,7 +105,7 @@ static void *thread_fun_consumer(void *thread_context) {
 
 
 extern "C" JNIEXPORT void JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_testRingMsgQueue(JNIEnv *env, jclass type) {
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testRingMsgQueue(JNIEnv *env, jclass type) {
     ring_msg_queue msgQueue = RingMsgQueue_create(sizeof(queue_msg_t), 10);
     LOGI("now created msg queue. available_msg=%d, remain_space=%d",
          RingMsgQueue_available_pop_msg_amount(msgQueue),
@@ -166,7 +166,7 @@ static void queue_handle_msg(queue_msg_t *msg_p) {
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_testQueueHandler(JNIEnv *env, jclass type) {
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testQueueHandler(JNIEnv *env, jclass type) {
     queue_handler handler_p = QueueHandler_create(10, queue_handle_msg);
 
     queue_msg_t msg = {0};
@@ -198,7 +198,7 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_testQueueHandler(JNIEnv *env, jclass ty
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_testSemaphore(JNIEnv *env, jclass type) {
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testSemaphore(JNIEnv *env, jclass type) {
     LOGD("enter %s:%d", __func__, __LINE__);
     sem_t sem;
     sem_init(&sem, 0, 0);
@@ -209,7 +209,7 @@ Java_tv_yuyin_nativeapp_jni_NativeLibJni_testSemaphore(JNIEnv *env, jclass type)
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_tv_yuyin_nativeapp_jni_NativeLibJni_testSimpleQueue(JNIEnv *env, jclass type) {
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testSimpleQueue(JNIEnv *env, jclass type) {
     LOGD("enter %s:%d", __func__, __LINE__);
     simple_queue_handle handle = simple_queue_init();
     LOGI("after init. simple_queue_available_space=%d, simple_queue_available_data=%d",
