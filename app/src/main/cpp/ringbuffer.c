@@ -14,6 +14,9 @@
 #define TAKE_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
+//config try read/write if no enough data or space
+#define RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH (0)
+
 /*
 ** the bitwise version :
 ** we apply n - 1 mask to n, and then check that is equal to 0
@@ -28,14 +31,12 @@ static inline uint32_t roundup_pow_of_two(uint32_t x) {
     if (x == 0 || is_power_of_2(x)) {
         return x;
     }
-    x--;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    x++;
-    return x;
+    // counter divide two times.
+    uint32_t counter = 0;
+    while (x >>= 1){
+        counter++;
+    }
+    return (uint32_t) (2 << counter);
 }
 
 struct __ring_buffer_t {
@@ -111,7 +112,15 @@ uint32_t RingBuffer_write(ring_buf ring_buf_p, const void *source, uint32_t size
         return 0;
     }
     uint32_t start = 0, first_part_len = 0, rest_len = 0;
+#if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
+    uint32_t origin_size = size;
+#endif
     size = TAKE_MIN(size, RingBuffer_available_space(ring_buf_p));
+#if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
+    if(origin_size != size){
+        return 0;
+    }
+#endif
     /* first put the data starting from fifo->in to buffer end */
     start = ring_buf_p->in & (ring_buf_p->size - 1);
     first_part_len = TAKE_MIN(size, ring_buf_p->size - start);
@@ -129,7 +138,15 @@ uint32_t RingBuffer_read(ring_buf ring_buf_p, void *target, uint32_t size) {
         return 0;
     }
     uint32_t start = 0, first_part_len = 0, rest_len = 0;
+#if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
+    uint32_t origin_size = size;
+#endif
     size = TAKE_MIN(size, RingBuffer_available_data(ring_buf_p));
+#if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
+    if(origin_size != size){
+        return 0;
+    }
+#endif
     /* first get the data from fifo->out until the end of the buffer */
     start = ring_buf_p->out & (ring_buf_p->size - 1);
     first_part_len = TAKE_MIN(size, ring_buf_p->size - start);
