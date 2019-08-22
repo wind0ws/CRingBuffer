@@ -65,35 +65,35 @@ uint32_t RingBuffer_write(__in const ring_buf ring_buf_p, __in const void *sourc
  * <p>WARN: you shouldn't call clear while calling read/write, otherwise it will have thread safe issue</p>
  * @param ring_buffer_p RingBuffer
  */
-inline void RingBuffer_clear(__in const ring_buf ring_buffer_p);
+void RingBuffer_clear(__in const ring_buf ring_buffer_p);
 
 /**
  * get current RingBuffer available data size
  * @param ring_buf_p RingBuffer
  * @return available read byte size
  */
-inline uint32_t RingBuffer_available_data(__in const ring_buf ring_buf_p);
+uint32_t RingBuffer_available_data(__in const ring_buf ring_buf_p);
 
 /**
  * get current RingBuffer available space to write
  * @param ring_buf_p RingBuffer
  * @return available write byte size
  */
-inline uint32_t RingBuffer_available_space(__in const ring_buf ring_buf_p);
+uint32_t RingBuffer_available_space(__in const ring_buf ring_buf_p);
 
 /**
  * indicate RingBuffer whether is empty(no data to read)
  * @param ring_buf_p RingBuffer
  * @return true indicate no data to read
  */
-inline bool RingBuffer_is_empty(__in const ring_buf ring_buf_p);
+bool RingBuffer_is_empty(__in const ring_buf ring_buf_p);
 
 /**
  * indicate RingBuffer whether is full(no space to write)
  * @param ring_buf_p RingBuffer
  * @return true indicate no space to write
  */
-inline bool RingBuffer_is_full(__in const ring_buf ring_buf_p);
+bool RingBuffer_is_full(__in const ring_buf ring_buf_p);
 
 #ifdef __cplusplus
 }

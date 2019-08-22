@@ -44,35 +44,35 @@ bool RingMsgQueue_pop(__in ring_msg_queue ring_msg_queue_p, __out void *msg_p);
  * after call this method, you are free to call push/pop even at same time in two thread just like before.</p>
  * @param ring_msg_queue_p RingMsgQueue
  */
-inline void RingMsgQueue_clear(__in ring_msg_queue ring_msg_queue_p);
+void RingMsgQueue_clear(__in ring_msg_queue ring_msg_queue_p);
 
 /**
  * get current msg amount in msg queue
  * @param ring_msg_queue_p RingMsgQueue
  * @return msg amount
  */
-inline uint32_t RingMsgQueue_available_pop_msg_amount(__in ring_msg_queue ring_msg_queue_p);
+uint32_t RingMsgQueue_available_pop_msg_amount(__in ring_msg_queue ring_msg_queue_p);
 
 /**
  * get current max pushable msg amount
  * @param ring_msg_queue_p RingMsgQueue
  * @return msg amount
  */
-inline uint32_t RingMsgQueue_available_push_msg_amount(__in ring_msg_queue ring_msg_queue_p);
+uint32_t RingMsgQueue_available_push_msg_amount(__in ring_msg_queue ring_msg_queue_p);
 
 /**
  * if msg amount in queue is zero
  * @param ring_msg_queue_p RingMsgQueue
  * @return true indicator queue is empty, otherwise false
  */
-inline bool RingMsgQueue_is_empty(__in ring_msg_queue ring_msg_queue_p);
+bool RingMsgQueue_is_empty(__in ring_msg_queue ring_msg_queue_p);
 
 /**
  * if available push msg amount is zero
  * @param ring_msg_queue_p RingMsgQueue
  * @return true indicator queue is full, otherwise false
  */
-inline bool RingMsgQueue_is_full(__in ring_msg_queue ring_msg_queue_p);
+bool RingMsgQueue_is_full(__in ring_msg_queue ring_msg_queue_p);
 
 /**
  * destroy RingMsgQueue and free memory

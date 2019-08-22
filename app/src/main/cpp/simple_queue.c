@@ -19,42 +19,40 @@ simple_queue_handle simple_queue_init(void) {
 }
 
 int simple_queue_available_space(simple_queue_handle handle) {
-    return SIMPLE_QUEUE_FIFO_SIZE - simple_queue_available_data(handle);
+    return SIMPLE_QUEUE_FIFO_SIZE - simple_queue_available_data(handle) - 1;
 }
 
-int simple_queue_available_data(simple_queue_handle handle){
-    int nextPutPt = (int)handle->PutPt;
-    int nextGetPt = (int)handle->GetPt;
-    int end = (int)&(handle->Fifo[SIMPLE_QUEUE_FIFO_SIZE]);
-    return abs((nextGetPt - nextPutPt + end) % end);
+int simple_queue_available_data(simple_queue_handle handle) {
+    int nextPutPt = (int) handle->PutPt;
+    int nextGetPt = (int) handle->GetPt;
+    int temp = (nextPutPt - nextGetPt) / sizeof(SimpleQueueDataType);
+    if (temp >= 0) {
+        return temp;
+    }
+    return (temp + SIMPLE_QUEUE_FIFO_SIZE) % SIMPLE_QUEUE_FIFO_SIZE;
 }
 
-bool simple_queue_is_empty(simple_queue_handle handle){
+bool simple_queue_is_empty(simple_queue_handle handle) {
     return simple_queue_available_data(handle) == 0;
 }
 
-bool simple_queue_is_full(simple_queue_handle handle){
+bool simple_queue_is_full(simple_queue_handle handle) {
     return simple_queue_available_space(handle) == 0;
 }
 
 int simple_queue_push(simple_queue_handle handle, SimpleQueueDataType data) {
-    SimpleQueueDataType volatile *nextPutPt;
-    nextPutPt = handle->PutPt + 1;
-
+    SimpleQueueDataType volatile *nextPutPt = handle->PutPt + 1;
     if (nextPutPt == &(handle->Fifo[SIMPLE_QUEUE_FIFO_SIZE])) {
         nextPutPt = &(handle->Fifo[0]); /* Wrap around. */
     }
-
-    int code;
     if (nextPutPt == handle->GetPt) {
         /* Fifo is full. */
-        code = SIMPLE_QUEUE_FAIL;
-    } else {
-        *(handle->PutPt) = data;
-        handle->PutPt = nextPutPt;
-        code = SIMPLE_QUEUE_SUCCESS;
+        return SIMPLE_QUEUE_FAIL;
     }
-    return code;
+
+    *(handle->PutPt) = data;
+    handle->PutPt = nextPutPt;
+    return SIMPLE_QUEUE_SUCCESS;
 }
 
 int simple_queue_pop(simple_queue_handle handle, SimpleQueueDataType *dataPtr) {
@@ -63,7 +61,8 @@ int simple_queue_pop(simple_queue_handle handle, SimpleQueueDataType *dataPtr) {
         return SIMPLE_QUEUE_FAIL;
     }
 
-    *dataPtr = *((handle->GetPt)++);
+    *dataPtr = *(handle->GetPt);
+    handle->GetPt++;
     if (handle->GetPt == &(handle->Fifo[SIMPLE_QUEUE_FIFO_SIZE])) {
         handle->GetPt = &(handle->Fifo[0]); /* Wrap around */
     }

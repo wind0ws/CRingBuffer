@@ -55,35 +55,35 @@ bool QueueHandler_send(__in queue_handler handler_p,__in queue_msg_t *msg_p);
  * @param handler_p queue handler ptr
  * @return amount
  */
-inline uint32_t QueueHandler_available_send_msg_amount(__in queue_handler handler_p);
+uint32_t QueueHandler_available_send_msg_amount(__in queue_handler handler_p);
 
 /**
  * current msg amount in queue handler
  * @param handler_p queue handler ptr
  * @return amount
  */
-inline uint32_t QueueHandler_current_queue_msg_amount(__in queue_handler handler_p);
+uint32_t QueueHandler_current_queue_msg_amount(__in queue_handler handler_p);
 
 /**
  * if current msg amount in queue handler is zero
  * @param handler_p queue handler ptr
  * @return true indicate for empty.
  */
-inline bool QueueHandler_is_empty(__in queue_handler handler_p);
+bool QueueHandler_is_empty(__in queue_handler handler_p);
 
 /**
  * if current can send msg max amount is zero.
  * @param handler_p queue handler ptr
  * @return true indicate queue is full
  */
-inline bool QueueHandler_is_full(__in queue_handler handler_p);
+bool QueueHandler_is_full(__in queue_handler handler_p);
 
 /**
  * clear all msg in queue if msg has not handled.
  * <p>usually it will be fast, but if you stuck in callback, it will effect after the latest callback finished </p>
  * @param handler_p queue handler ptr
  */
-inline void QueueHandler_clear(__in queue_handler handler_p);
+void QueueHandler_clear(__in queue_handler handler_p);
 
 /**
  * destroy queue handler
