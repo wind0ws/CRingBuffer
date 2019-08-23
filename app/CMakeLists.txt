@@ -22,6 +22,7 @@ add_library( # Sets the name of the library.
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/msg_queue_handler.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_buf.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/tests.cpp)
 
 
@@ -33,6 +34,7 @@ add_executable(
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ringbuffer.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_msg_queue.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/msg_queue_handler.c
+        ${CMAKE_SOURCE_DIR}/src/main/cpp/ring_buf.c
         ${CMAKE_SOURCE_DIR}/src/main/cpp/main.c
 )
 

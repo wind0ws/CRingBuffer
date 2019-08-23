@@ -31,7 +31,10 @@ class NativeTestsJni {
         external fun testSemaphore()
 
         @JvmStatic
-        external fun testSimpleQueue();
+        external fun testSimpleQueue()
+
+        @JvmStatic
+        external fun testRingBuf()
     }
 
 }

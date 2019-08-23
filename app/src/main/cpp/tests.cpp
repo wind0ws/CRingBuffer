@@ -244,3 +244,122 @@ Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testSimpleQueue(JNIEnv *env, jclass t
     LOGI("test queue succeed");
 }
 
+
+
+
+
+
+
+//===========================ring_buf test case=====================================================
+#include "ring_buf.h"
+typedef struct {
+    int i;
+    short s;
+    char c;
+}ring_data_t;
+
+
+typedef struct {
+    ring_handle handle;
+    bool flag_exit;
+}ring_buf_thread_context_t;
+
+static void *ring_buf_producer_thread(void *param){
+    ring_buf_thread_context_t *context = (ring_buf_thread_context_t *)param;
+//    SimpleQueueDataType data = 'A';
+    char data = 'A';
+    while (!context->flag_exit){
+        if(data > 'Z'){
+            data = 'A';
+        }
+        if (ring_buf_write(context->handle, &data, sizeof(data))){
+            LOGD("push %c \n", data);
+            data++;
+            usleep(20000);
+        } else {
+            usleep(40000);
+        }
+    }
+    LOGD("=== exit producer ===\n");
+    return NULL;
+}
+
+static void *ring_buf_consumer_thread(void *param){
+    ring_buf_thread_context_t *context = (ring_buf_thread_context_t *)param;
+//    SimpleQueueDataType data = 0;
+    char data[5] = {'0'};
+    while (1){
+        if(ring_buf_read(context->handle, &data, 4)){
+            LOGD("              pop %s\n",data);
+            usleep(80000);
+        } else if(context->flag_exit){
+            uint32_t last_data = ring_buf_available_data(context->handle);
+            if (last_data > 0) {
+                memset(data, '0', 5);
+                ring_buf_read(context->handle, &data, last_data);
+                LOGD("           last packet[%d] data=>%s\n",last_data, data);
+            }
+            break;
+        } else{
+            usleep(100000);
+        }
+    }
+    LOGD("=== exit consumer ===\n");
+    return NULL;
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_tv_yuyin_nativeapp_jni_NativeTestsJni_testRingBuf(JNIEnv *env, jclass type) {
+
+    ring_handle handle = ring_buf_create(12 * sizeof(ring_data_t));
+    LOGD("after ring create, data_amount=%d, available_space=%d\n", ring_buf_available_data(handle),
+           ring_buf_available_space(handle));
+
+
+    ring_buf_thread_context_t threadContext = {
+            .handle = handle,
+            .flag_exit = false
+    };
+    pthread_t pthread_producer;
+    pthread_create(&pthread_producer,NULL,ring_buf_producer_thread,&threadContext);
+    pthread_t pthread_consumer;
+    pthread_create(&pthread_consumer,NULL,ring_buf_consumer_thread,&threadContext);
+
+    sleep(8);
+
+    threadContext.flag_exit = true;
+    pthread_join(pthread_producer,NULL);
+    pthread_join(pthread_consumer,NULL);
+    LOGD("after pop done, data_amount=%d, available_space=%d\n", ring_buf_available_data(handle),
+           ring_buf_available_space(handle));
+
+
+    int counter = 0;
+    while (counter < 10) {
+        LOGD("\n\n\n===========[%d]===========\n", counter++);
+        ring_data_t msg = {0};
+        for (char c = 'A'; c < 'A' + 12; ++c) {
+            msg.c = c;
+            msg.s = c;
+            msg.i = c;
+            LOGD("push %c result %d\n", c, ring_buf_write(handle, &msg, sizeof(msg)));
+        }
+        LOGD("after ring push, data_amount=%d, available_space=%d\n", ring_buf_available_data(handle),
+               ring_buf_available_space(handle));
+
+        for (int i = 0; i < 12; ++i) {
+            if (ring_buf_read(handle, &msg, sizeof(msg))) {
+                LOGD("pop %d times succeed, result=%c\n", i, msg.c);
+            } else {
+                LOGD("pop failed at %d\n", i);
+            }
+        }
+        LOGD("after ring pop, data_amount=%d, available_space=%d\n", ring_buf_available_data(handle),
+               ring_buf_available_space(handle));
+    }
+
+    ring_buf_destroy(&handle);
+
+
+}

@@ -41,4 +41,9 @@ class NativeTestsJniTest {
         NativeTestsJni.testSimpleQueue()
     }
 
+    @Test
+    fun testRingBuf(){
+        NativeTestsJni.testRingBuf()
+    }
+
 }
