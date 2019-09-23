@@ -11,7 +11,7 @@
 
 #ifndef TAKE_MIN
 /* take min value of a,b */
-#define TAKE_MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define TAKE_MIN(a, b) (((a) > (b)) ? (b) : (a))
 #endif
 
 //config try read/write if no enough data or space
@@ -115,7 +115,8 @@ uint32_t RingBuffer_write(ring_buf ring_buf_p, const void *source, uint32_t size
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
     uint32_t origin_size = size;
 #endif
-    size = TAKE_MIN(size, RingBuffer_available_space(ring_buf_p));
+    uint32_t available_space = RingBuffer_available_space(ring_buf_p);
+    size = TAKE_MIN(size, available_space);
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
     if(origin_size != size){
         return 0;
@@ -124,7 +125,9 @@ uint32_t RingBuffer_write(ring_buf ring_buf_p, const void *source, uint32_t size
     /* first put the data starting from fifo->in to buffer end */
     start = ring_buf_p->in & (ring_buf_p->size - 1);
     first_part_len = TAKE_MIN(size, ring_buf_p->size - start);
-    memcpy(ring_buf_p->buf + start, source, first_part_len);
+    if (first_part_len) {
+        memcpy(ring_buf_p->buf + start, source, first_part_len);
+    }
     /* then put the rest_len (if any) at the beginning of the buffer */
     if ((rest_len = size - first_part_len) > 0) {
         memcpy(ring_buf_p->buf, (char *) source + first_part_len, rest_len);
@@ -141,7 +144,8 @@ uint32_t RingBuffer_read(ring_buf ring_buf_p, void *target, uint32_t size) {
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
     uint32_t origin_size = size;
 #endif
-    size = TAKE_MIN(size, RingBuffer_available_data(ring_buf_p));
+    uint32_t available_data = RingBuffer_available_data(ring_buf_p);
+    size = TAKE_MIN(size, available_data);
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
     if(origin_size != size){
         return 0;
@@ -150,7 +154,9 @@ uint32_t RingBuffer_read(ring_buf ring_buf_p, void *target, uint32_t size) {
     /* first get the data from fifo->out until the end of the buffer */
     start = ring_buf_p->out & (ring_buf_p->size - 1);
     first_part_len = TAKE_MIN(size, ring_buf_p->size - start);
-    memcpy(target, ring_buf_p->buf + start, first_part_len);
+    if (first_part_len) {
+        memcpy(target, ring_buf_p->buf + start, first_part_len);
+    }
     /* then get the rest_len (if any) from the beginning of the buffer */
     if ((rest_len = size - first_part_len) > 0) {
         memcpy(target + first_part_len, ring_buf_p->buf, rest_len);

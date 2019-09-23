@@ -6,7 +6,7 @@
 #include <malloc.h>
 #include <stdbool.h>
 
-#define RING_BUF_TAKE_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define RING_BUF_TAKE_MIN(a, b) ((a) > (b) ? (b) : (a))
 
 
 struct __ring_buf_t{
@@ -87,7 +87,9 @@ size_t ring_buf_write(ring_handle handle, void *source, size_t len){
 
     //first part: from write offset to end.
     size_t first_part_len = RING_BUF_TAKE_MIN(len, handle->size - handle->offset_write);
-    memcpy(handle->pbuf + handle->offset_write, source, first_part_len);
+    if (first_part_len) {
+        memcpy(handle->pbuf + handle->offset_write, source, first_part_len);
+    }
 
     //second part: from begin
     size_t second_part_len = len - first_part_len;
@@ -116,7 +118,7 @@ void ring_buf_destroy(ring_handle *handle_p){
     if (!handle) {
         return;
     }
-    if (handle->is_pbuf_internal_malloced && handle->pbuf) {
+    if (handle->pbuf && handle->is_pbuf_internal_malloced) {
         free(handle->pbuf);
         handle->pbuf = NULL;
     }

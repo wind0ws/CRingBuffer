@@ -55,7 +55,7 @@ size_t ring_buf_read(ring_handle handle, void *target, size_t len);
 /**
  * write data to ring_buf
  * @param handle ring_buf handle
- * @param source copy this poninter data to ring_buf.
+ * @param source copy this pointer data to ring_buf.
  * @param len the length you want to write.
  * @return size of real write.
  */
