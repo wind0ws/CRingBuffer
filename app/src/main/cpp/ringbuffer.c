@@ -33,7 +33,7 @@ static inline uint32_t roundup_pow_of_two(uint32_t x) {
     }
     // counter divide two times.
     uint32_t counter = 0;
-    while (x >>= 1){
+    while (x >>= 1) {
         counter++;
     }
     return (uint32_t) (2 << counter);
@@ -84,7 +84,7 @@ void RingBuffer_destroy(ring_buf ring_buffer_p) {
     free(ring_buffer_p);
 }
 
-extern inline bool RingBuffer_is_empty( ring_buf ring_buf_p) {
+extern inline bool RingBuffer_is_empty(ring_buf ring_buf_p) {
     return RingBuffer_available_data(ring_buf_p) == 0;
 }
 
@@ -118,7 +118,7 @@ uint32_t RingBuffer_write(ring_buf ring_buf_p, const void *source, uint32_t size
     uint32_t available_space = RingBuffer_available_space(ring_buf_p);
     size = TAKE_MIN(size, available_space);
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
-    if(origin_size != size){
+    if (origin_size != size) {
         return 0;
     }
 #endif
@@ -147,7 +147,7 @@ uint32_t RingBuffer_read(ring_buf ring_buf_p, void *target, uint32_t size) {
     uint32_t available_data = RingBuffer_available_data(ring_buf_p);
     size = TAKE_MIN(size, available_data);
 #if !RINGBUFFER_CONFIG_TRY_RW_IF_NOT_ENOUGH
-    if(origin_size != size){
+    if (origin_size != size) {
         return 0;
     }
 #endif
@@ -159,7 +159,7 @@ uint32_t RingBuffer_read(ring_buf ring_buf_p, void *target, uint32_t size) {
     }
     /* then get the rest_len (if any) from the beginning of the buffer */
     if ((rest_len = size - first_part_len) > 0) {
-        memcpy(target + first_part_len, ring_buf_p->buf, rest_len);
+        memcpy((char *) target + first_part_len, ring_buf_p->buf, rest_len);
     }
     ring_buf_p->out += size;
     return size;
